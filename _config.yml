@@ -122,4 +122,5 @@ sass:
   style: :compressed
 plugins: [jekyll-paginate-v2, jekyll-seo-tag, jekyll-redirect-from]
 #theme: type-on-strap # Uncomment if using the theme as a jekyll theme gem
-exclude: ["Gemfile", "Gemfile.lock", "type-on-strap.gemspec", "*.gem", "LICENSE", "README.md", "screenshot.png", "package.json", "node_modules", "gulpfile.js", ".idea/*", "scripts/*"]
+exclude: ["Gemfile", "Gemfile.lock", "type-on-strap.gemspec", "*.gem", "LICENSE", "README.md", "screenshot.png",
+  "package.json", "node_modules", "gulpfile.js", ".idea/*", "scripts/*", "vendor"]
