@@ -124,6 +124,7 @@
 }
 
 .modern-nav__links a {
+  font-family: var(--font-serif);
   font-size: 1.1rem;
   font-weight: 500;
   color: var(--text-secondary);
