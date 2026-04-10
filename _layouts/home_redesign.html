@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>{{ site.theme_settings.title }}</title>
+    <meta name="description" content="{{ site.theme_settings.description }}">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+
+    <!-- Modern stylesheet -->
+    <link rel="stylesheet" href="{{ site.baseurl }}/assets/css/modern.css">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="{{ site.baseurl }}/assets/img/favicon-32x32.png" sizes="32x32">
+
+    <!-- RSS -->
+    <link rel="alternate" type="application/atom+xml" title="{{ site.theme_settings.title }}" href="{{ site.url }}{{ site.baseurl }}/feed.xml">
+
+    <!-- Canonical -->
+    <link rel="canonical" href="{{ page.url | replace:'index.html','' | prepend: site.baseurl | prepend: site.url }}">
+
+    <!-- Twitter Cards -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="{{ site.theme_settings.title }}">
+    <meta name="twitter:description" content="{{ site.theme_settings.description }}">
+    {% if site.theme_settings.twitter %}<meta name="twitter:creator" content="@{{ site.theme_settings.twitter }}">{% endif %}
+
+    <!-- SEO -->
+    {% seo %}
+</head>
+<body class="modern-page">
+
+  <!-- ============ NAVBAR ============ -->
+  <nav class="modern-nav">
+    <div class="modern-nav__inner">
+      <a class="modern-nav__brand" href="{{ site.baseurl }}/">
+        <img class="modern-nav__logo" src="{{ site.baseurl }}/{{ site.theme_settings.avatar }}" alt="SAIL Logo">
+        <span class="modern-nav__title">The Stanford AI Lab Blog</span>
+      </a>
+
+      <button class="modern-nav__toggle" onclick="document.querySelector('.modern-nav__links').classList.toggle('open')" aria-label="Toggle navigation">
+        <span></span><span></span><span></span>
+      </button>
+
+      <ul class="modern-nav__links">
+        <li><a href="{{ site.baseurl }}/" class="active">Posts</a></li>
+        <li><a href="{{ site.baseurl }}/about">About</a></li>
+        <li><a href="{{ site.baseurl }}/subscribe">Subscribe</a></li>
+        <li><a href="http://ai.stanford.edu/">SAIL &#8599;</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main class="modern-content">
+
+    <!-- ============ HERO — Latest Post ============ -->
+    {% assign hero_post = paginator.posts | first %}
+    {% if hero_post %}
+    <a href="{{ hero_post.url | prepend: site.baseurl }}" style="text-decoration:none; color:inherit;">
+      <section class="hero">
+        {% if hero_post.feature-img %}
+          {% if hero_post.draft %}
+            <img class="hero__image" src="{{ site.baseurl }}/{{ hero_post.feature-img }}" alt="{{ hero_post.title }}">
+          {% else %}
+            <img class="hero__image" src="{{ site.produrl }}/{{ hero_post.feature-img }}" alt="{{ hero_post.title }}">
+          {% endif %}
+        {% elsif hero_post.thumbnail %}
+          {% if hero_post.draft %}
+            <img class="hero__image" src="{{ site.baseurl }}/{{ hero_post.thumbnail }}" alt="{{ hero_post.title }}">
+          {% else %}
+            <img class="hero__image" src="{{ site.produrl }}/{{ hero_post.thumbnail }}" alt="{{ hero_post.title }}">
+          {% endif %}
+        {% endif %}
+
+        <div class="hero__overlay">
+          {% if hero_post.tags.size > 0 %}
+            <span class="hero__tag">{{ hero_post.tags | first }}</span>
+          {% endif %}
+          <h1 class="hero__title">{{ hero_post.title }}</h1>
+          {% if hero_post.short-summary %}
+            <p class="hero__excerpt">{{ hero_post.short-summary | strip_html | truncate: 200 }}</p>
+          {% elsif hero_post.summary %}
+            <p class="hero__excerpt">{{ hero_post.summary | strip_html | truncate: 200 }}</p>
+          {% endif %}
+          <div class="hero__meta">
+            <span>{{ hero_post.date | date: "%B %-d, %Y" }}</span>
+            <span>&middot;</span>
+            <span>{% assign words = hero_post.content | number_of_words %}{% assign mins = words | divided_by: 250 %}{% if mins < 1 %}1{% else %}{{ mins }}{% endif %} min read</span>
+          </div>
+          <span class="hero__cta">
+            Read article
+            <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><path d="M6.5 3.5L11 8l-4.5 4.5" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </div>
+      </section>
+    </a>
+    {% endif %}
+
+    <!-- ============ FILTER BAR + GRID ============ -->
+    <div class="section-wrapper">
+      <div class="section-header">
+        <h2 class="section-header__title">Latest Research & News</h2>
+      </div>
+
+      <div class="filter-bar">
+        <a class="filter-pill active" href="{{ site.baseurl }}/">All</a>
+        <a class="filter-pill" href="{{ site.baseurl }}/conferences">Conferences</a>
+        <a class="filter-pill" href="{{ site.baseurl }}/vision">Computer Vision</a>
+        <a class="filter-pill" href="{{ site.baseurl }}/robotics">Robotics</a>
+        <a class="filter-pill" href="{{ site.baseurl }}/nlp">NLP</a>
+        <a class="filter-pill" href="{{ site.baseurl }}/ml">Machine Learning</a>
+        <a class="filter-pill" href="{{ site.baseurl }}/rl">Reinforcement Learning</a>
+      </div>
+
+      <!-- ============ POST CARDS ============ -->
+      <div class="post-grid">
+        {% for post in paginator.posts %}
+          {% if forloop.first %}
+            {% continue %}
+          {% endif %}
+          {% unless post.hide %}
+          <article class="post-card">
+            {% if post.thumbnail %}
+            <div class="post-card__image-wrapper">
+              {% if post.draft %}
+                <img src="{{ site.baseurl }}/{{ post.thumbnail }}" alt="{{ post.title }}">
+              {% else %}
+                <img src="{{ site.produrl }}/{{ post.thumbnail }}" alt="{{ post.title }}">
+              {% endif %}
+            </div>
+            {% endif %}
+
+            <div class="post-card__body">
+              {% if post.tags.size > 0 %}
+              <div class="post-card__tags">
+                {% for tag in post.tags limit:2 %}
+                  <span class="post-card__tag">{{ tag }}</span>
+                {% endfor %}
+              </div>
+              {% endif %}
+
+              <h3 class="post-card__title">
+                <a href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a>
+              </h3>
+
+              <p class="post-card__excerpt">
+                {% if post.short-summary %}
+                  {{ post.short-summary | strip_html | truncate: 140 }}
+                {% elsif post.summary %}
+                  {{ post.summary | strip_html | truncate: 140 }}
+                {% else %}
+                  {{ post.content | strip_html | truncate: 140 }}
+                {% endif %}
+              </p>
+
+              <div class="post-card__meta">
+                <span class="post-card__date">{{ post.date | date: "%b %-d, %Y" }}</span>
+                <a class="post-card__read-more" href="{{ post.url | prepend: site.baseurl }}">
+                  Read
+                  <svg width="14" height="14" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><path d="M6.5 3.5L11 8l-4.5 4.5" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </a>
+              </div>
+            </div>
+          </article>
+          {% endunless %}
+        {% endfor %}
+      </div>
+
+      <!-- ============ PAGINATION ============ -->
+      {% if paginator.total_pages > 1 %}
+      <div class="modern-pagination">
+        {% if paginator.previous_page %}
+          <a href="{{ paginator.previous_page_path | prepend: site.baseurl | replace: '//', '/' }}">
+            <svg width="14" height="14" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3.5L5 8l4.5 4.5" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Previous
+          </a>
+        {% endif %}
+        {% if paginator.next_page %}
+          <a href="{{ paginator.next_page_path | prepend: site.baseurl | replace: '//', '/' }}">
+            Next
+            <svg width="14" height="14" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><path d="M6.5 3.5L11 8l-4.5 4.5" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+        {% endif %}
+      </div>
+      {% endif %}
+
+    </div>
+  </main>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="modern-footer">
+    <div class="modern-footer__inner">
+      <div class="modern-footer__brand">
+        <h3>Stanford AI Lab Blog</h3>
+        <p>Sharing the latest research, discussions, and updates from the Stanford AI Lab community with the broader public.</p>
+      </div>
+      <div>
+        <h4 class="modern-footer__heading">Explore</h4>
+        <ul class="modern-footer__links">
+          <li><a href="{{ site.baseurl }}/">All Posts</a></li>
+          <li><a href="{{ site.baseurl }}/conferences">Conferences</a></li>
+          <li><a href="{{ site.baseurl }}/nlp">NLP</a></li>
+          <li><a href="{{ site.baseurl }}/vision">Computer Vision</a></li>
+          <li><a href="{{ site.baseurl }}/robotics">Robotics</a></li>
+          <li><a href="{{ site.baseurl }}/ml">Machine Learning</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="modern-footer__heading">Connect</h4>
+        <ul class="modern-footer__links">
+          <li><a href="{{ site.baseurl }}/about">About the Blog</a></li>
+          <li><a href="{{ site.baseurl }}/subscribe">Subscribe</a></li>
+          <li><a href="http://ai.stanford.edu/">SAIL Website</a></li>
+          <li><a href="{{ site.url }}{{ site.baseurl }}/feed.xml">RSS Feed</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="modern-footer__bottom">
+      <span>&copy; {{ 'now' | date: "%Y" }} Stanford AI Lab</span>
+      <div class="modern-footer__social">
+        <a href="https://twitter.com/StanfordAILab" aria-label="Twitter/X">&#x1D54F;</a>
+        <a href="{{ site.url }}{{ site.baseurl }}/feed.xml" aria-label="RSS">&#9673;</a>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>
