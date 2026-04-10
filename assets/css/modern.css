@@ -798,6 +798,64 @@
 }
 
 /* ============================================
+   SHOW MORE BUTTON
+   ============================================ */
+.show-more-wrapper {
+  text-align: center;
+  padding: 1rem 0 3rem 0;
+}
+
+.show-more-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--cardinal);
+  background: var(--bg-card);
+  border: 1.5px solid var(--cardinal);
+  border-radius: 100px;
+  padding: 0.8em 2em;
+  cursor: pointer;
+  transition: all var(--transition);
+}
+
+.show-more-btn:hover {
+  background: var(--cardinal);
+  color: #fff;
+  box-shadow: 0 4px 16px rgba(140, 21, 21, 0.2);
+  transform: translateY(-1px);
+}
+
+.show-more-btn svg {
+  transition: transform var(--transition);
+}
+
+.show-more-btn:hover svg {
+  transform: translateY(2px);
+}
+
+.show-more-count {
+  display: block;
+  margin-top: 0.75rem;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+/* Fade-in animation for newly revealed cards */
+@keyframes fadeSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ============================================
    UTILITY — hide old theme elements on modern pages
    ============================================ */
 .modern-page .site-header,
